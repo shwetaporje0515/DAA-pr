@@ -1,0 +1,53 @@
+import java.util.*;
+
+public class pr4{
+    public static int[] knapsack01(int numOfItem, int[] profits,int[] weights, int capacity){
+
+        int[][] dp = new int[numOfItem + 1][capacity + 1];
+
+
+        for(int i = 0; i <= numOfItem; i++){
+            for(int w = 0; w <= capacity; w++){
+                if(i == 0 || w == 0){
+                    dp[i][w] = 0;
+                }else if(weights[i-1] <= w){
+                    dp[i][w] = Math.max(dp[i-1][w],dp[i-1][w - weights[i - 1]]+profits[i-1]);
+                }else{
+                    dp[i][w] = dp[i-1][w];
+                }
+            }
+        }
+
+        List<Integer> selectedItems = new ArrayList<Integer>();
+        int i = numOfItem, w = capacity;
+        while(i > 0 && w > 0){
+            if(dp[i][w] != dp[i-1][w]){
+                selectedItems.add(i-1);
+                w = w - weights[i-1];
+            }
+            i--;
+        }
+
+        int[] result = new int[selectedItems.size()];
+        for(int j = 0;j < selectedItems.size(); j++){
+            result[j] = selectedItems.get(selectedItems.size() - j - 1);
+        }
+
+        System.out.println("Maximum value: " + dp[numOfItem][capacity]);
+        System.out.print("Selected items: ");
+        for (int item : result) {
+            System.out.print(item + " ");
+        }
+        System.out.println();
+        return result;
+    }
+
+    public static void main(String args[]) {
+        int n = 3;
+        int[] values = {30, 24, 15};
+        int[] weights = {18, 15, 10};
+        int capacity = 20;
+
+        knapsack01(n, values, weights, capacity);
+    }
+}
